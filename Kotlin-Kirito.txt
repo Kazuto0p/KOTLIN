@@ -1,0 +1,390 @@
+KOTLIN
+
+
+1. What is kotlin ?
+   
+	Kotlin is a modern, statically typed, general-purpose programming language developed by JetBrains. It is known for its conciseness, safety, and interoperability with Java and other languages.
+Key characteristics of Kotlin:
+Concise: Kotlin aims to reduce boilerplate code, making it more expressive and readable than some other languages.
+Safe: It incorporates features like null safety to help prevent common programming errors related to null references.
+Interoperable: Kotlin is designed to be fully interoperable with Java, allowing developers to use existing Java libraries and frameworks within Kotlin projects. It can also be compiled to JavaScript and native code. 
+Cross-platform: Kotlin can be used for various platforms, including Android development (where it is increasingly becoming the preferred language), server-side applications, web development (with Kotlin/JS), and native applications (with Kotlin/Native).
+Open-source: Kotlin is an open-source project, fostering a strong community and continuous development.
+
+
+2. Why is Kotlin popular?
+
+	Android Development: Google has officially declared Kotlin as the preferred language for Android app development, leading to its widespread adoption in the Android ecosystem.
+Productivity: Its concise syntax and safety features can lead to faster development cycles and fewer bugs.
+Developer Satisfaction: Many developers find Kotlin a pleasant and efficient language to work with.
+Modern Features: It offers modern language features that improve code quality and maintainability.
+
+3. How many ways to declare variables in kotlin ?
+
+	In Kotlin, there are two primary ways to declare variables: val and var. 
+
+1. val (Value - Immutable)
+Variables declared with val are read-only (like a constant in some other languages).
+
+They must be initialized when declared and cannot be reassigned to a different value later in the code.
+
+Use val by default unless you specifically need to change the variable's value.
+
+Example:
+
+	val myImmutableNumber = 10
+// myImmutableNumber = 20 // This would cause a compilation error
+
+
+
+2. var (Variable - Mutable)
+Variables declared with var are mutable; their value can be changed (reassigned) after they are initially declared.
+
+The type of the variable, however, remains fixed.
+
+Example:
+
+	var myMutableNumber = 10
+myMutableNumber = 20 // This is perfectly valid
+
+
+
+SUMMARY
+
+Declaration Type,	Mutability,		Can be Reassigned?,	When to Use
+val,			Immutable (Read-only),	No,			For values that should never change after initialization.
+var,			Mutable,		Yes,			"For values that need to change (e.g., counters, state variables)."
+
+
+Kotlin is designed to treat **everything as an object**, which means it doesn't have the distinction between primitive types and wrapper types that languages like Java have at the code level.
+
+The fundamental, built-in data types in Kotlin can be categorized into **5 main groups**, which are further broken down into **10 individual types** used to store basic values.
+
+-----
+
+## 1\. Numbers (6 Types)
+
+Numbers are divided into **Integer** types (whole numbers) and **Floating-Point** types (decimal numbers).
+
+| Category | Kotlin Type | Size (bits) | Purpose |
+| :---: | :---: | :---: | :--- |
+| **Integer** | `Byte` | 8 | Very small whole numbers (-128 to 127) |
+| | `Short` | 16 | Small whole numbers |
+| | **`Int`** (Default) | 32 | The most common whole number type |
+| | `Long` | 64 | Very large whole numbers |
+| **Floating-Point** | `Float` | 32 | Single-precision decimal numbers |
+| | **`Double`** (Default) | 64 | Double-precision decimal numbers |
+
+-----
+
+## 2\. Boolean (1 Type)
+
+| Kotlin Type | Values | Purpose |
+| :---: | :---: | :--- |
+| **`Boolean`** | `true` or `false` | For logical operations and control flow. |
+
+-----
+
+## 3\. Characters (1 Type)
+
+| Kotlin Type | Purpose |
+| :---: | :--- |
+| **`Char`** | Stores a single 16-bit Unicode character (e.g., 'a', 'Z', '9'). |
+
+-----
+
+## 4\. Strings (1 Type)
+
+| Kotlin Type | Purpose |
+| :---: | :--- |
+| **`String`** | Stores a sequence of characters (e.g., "Hello world"). Strings are **immutable**. |
+
+-----
+
+## 5\. Arrays (1 Type)
+
+| Kotlin Type | Purpose |
+| :---: | :--- |
+| **`Array`** | Stores a collection of elements, typically of the same type, in a fixed size (e.g., `arrayOf(1, 2, 3)`). |
+
+### **Specialized Array Types**
+
+Kotlin also has **specialized array classes** to avoid the performance overhead of boxing for primitives (converting the object type to its primitive counterpart on the Java Virtual Machine). These include:
+
+  * `IntArray`
+  * `BooleanArray`
+  * `CharArray`
+  * `LongArray`
+  * ...and so on.
+
+-----
+
+### **💡 Kotlin's Object-Oriented Approach**
+
+The most important takeaway is that at the source code level, **all these types are classes (objects)** in Kotlin. This means you can call methods and access properties on them, like:
+
+```kotlin
+val myInt = 10
+println(myInt.toString()) // Calling a method on the Int object
+```
+
+When compiling to run on the JVM, Kotlin's compiler smartly uses the fast, underlying primitive types (`int`, `double`, etc.) for non-nullable variables to ensure good performance.
+
+
+
+
+
+CONDITIONS
+
+
+In Kotlin, conditions are handled primarily through the **`if` expression** and the powerful **`when` expression**. Kotlin's approach treats control flow structures as expressions, meaning they **return a value**, which is a key difference from many other languages.
+
+-----
+
+## 1\. The `if` Expression 🚦
+
+The `if` statement in Kotlin is an **expression**, meaning it returns the value of the branch that is executed. This often replaces the need for the ternary operator (`condition ? true_value : false_value`) found in languages like Java.
+
+### **As a Statement (Traditional Use)**
+
+You can use `if` just like in Java or C++ for control flow:
+
+```kotlin
+val a = 10
+val b = 20
+
+if (a > b) {
+    println("a is greater than b")
+} else if (a < b) {
+    println("a is less than b")
+} else {
+    println("a is equal to b")
+}
+```
+
+### **As an Expression (Returning a Value)**
+
+The result of the `if` branch can be assigned directly to a variable:
+
+```kotlin
+val a = 10
+val b = 20
+
+// The if expression returns the value of the last line in the executed block.
+val max = if (a > b) {
+    println("a is max")
+    a // The returned value
+} else {
+    println("b is max")
+    b // The returned value
+}
+
+println("The maximum value is $max") // Output: The maximum value is 20
+```
+
+-----
+
+## 2\. The `when` Expression (The Switch Replacement) 🌟
+
+The `when` expression is Kotlin's highly flexible replacement for the `switch` statement in other languages. Like `if`, it is an expression and **returns a value**.
+
+### **Basic `when` Usage**
+
+It matches a value against multiple choices (`cases`).
+
+```kotlin
+val day = 3
+
+val dayName = when (day) {
+    1 -> "Monday"
+    2 -> "Tuesday"
+    3 -> "Wednesday" // This branch is executed
+    4 -> "Thursday"
+    in 5..7 -> "Weekend Day" // Range check
+    else -> "Invalid day number"
+}
+
+println("Day $day is $dayName") // Output: Day 3 is Wednesday
+```
+
+### **Advanced `when` Features**
+
+  * **Combining Cases:** You can combine multiple cases separated by a comma.
+
+    ```kotlin
+    val code = 'A'
+    when (code) {
+        'A', 'E', 'I', 'O', 'U' -> println("Vowel")
+        else -> println("Consonant")
+    }
+    ```
+
+  * **Using Arbitrary Expressions (instead of a single value):** You can use an arbitrary Boolean expression as a condition for a `when` branch.
+
+    ```kotlin
+    val x = 15
+
+    when (x) {
+        in 1..10 -> println("x is between 1 and 10")
+        is Int -> println("x is an integer") // Type check
+        !in 1..100 -> println("x is outside the range 1 to 100")
+        else -> println("No match")
+    }
+    ```
+
+  * **`when` as a Replacement for `if-else if` Chains:** You can omit the argument entirely to use `when` as a cleaner series of `if-else if` checks.
+
+    ```kotlin
+    val temp = 25
+    when {
+        temp < 0 -> println("It's freezing")
+        temp in 0..15 -> println("It's chilly")
+        temp in 16..30 -> println("It's pleasant") // This branch is executed
+        else -> println("It's hot")
+    }
+    ```
+
+-----
+
+**Crucial Note on Exhaustiveness:**
+
+When a `when` expression is used as an expression (meaning it returns a value), it **must be exhaustive** (cover all possible cases).
+
+  * If the input is an **`Int`**, the `else` branch handles everything not explicitly covered.
+  * If the input is an **`Enum`** or a **`Sealed Class`**, the compiler can check that all possible subtypes/values have been covered, and the `else` branch might not be required if all types are listed. This is a powerful feature for enforcing complete logic\!
+
+
+
+LOOPS IN KOTLIN
+
+
+Kotlin provides several types of loops to execute a block of code repeatedly. The most common types are the **`for` loop**, the **`while` loop**, and the **`do-while` loop**.
+
+-----
+
+## 1\. The `for` Loop 🔄
+
+The `for` loop in Kotlin is primarily used to iterate through anything that provides an **iterator**. This includes ranges, collections (like Lists and Sets), arrays, and strings.
+
+### **Iterating through Ranges (Most Common)**
+
+The most idiomatic way to use `for` is with a **range expression**.
+
+  * **Ascending Range (`..`)**: Includes the end value.
+
+    ```kotlin
+    // Prints numbers from 1 to 5, including 5
+    for (i in 1..5) { 
+        print("$i ") // Output: 1 2 3 4 5 
+    }
+    ```
+
+  * **Excluding End Value (`until`)**: Excludes the end value.
+
+    ```kotlin
+    // Prints numbers from 1 up to (but not including) 5
+    for (i in 1 until 5) {
+        print("$i ") // Output: 1 2 3 4
+    }
+    ```
+
+  * **Descending Range (`downTo`)**: Iterates backward.
+
+    ```kotlin
+    // Prints numbers from 5 down to 1
+    for (i in 5 downTo 1) {
+        print("$i ") // Output: 5 4 3 2 1
+    }
+    ```
+
+  * **Custom Step Size (`step`)**: Changes the increment/decrement value.
+
+    ```kotlin
+    // Prints every second number from 1 to 10
+    for (i in 1..10 step 2) {
+        print("$i ") // Output: 1 3 5 7 9 
+    }
+    ```
+
+### **Iterating through Collections/Arrays**
+
+```kotlin
+val fruits = listOf("Apple", "Banana", "Cherry")
+
+// Iterates through the elements
+for (fruit in fruits) {
+    println(fruit)
+}
+
+// Iterating with index using `indices` or `withIndex()`
+for (i in fruits.indices) {
+    println("Item at $i is ${fruits[i]}")
+}
+
+// or
+for ((index, value) in fruits.withIndex()) {
+    println("Item at $index is $value")
+}
+```
+
+-----
+
+## 2\. The `while` Loop ⏳
+
+The `while` loop repeatedly executes a block of code as long as a given **condition is true**. The condition is checked **before** each execution of the loop body.
+
+```kotlin
+var count = 0
+while (count < 3) { // Condition checked first
+    println("While loop iteration: $count")
+    count++
+}
+// Output:
+// While loop iteration: 0
+// While loop iteration: 1
+// While loop iteration: 2
+```
+
+-----
+
+## 3\. The `do-while` Loop ⚙️
+
+The `do-while` loop is similar to `while`, but it executes the loop body **at least once** before checking the condition. The condition is checked **after** the first execution.
+
+```kotlin
+var i = 0
+do {
+    println("Do-while loop iteration: $i")
+    i++
+} while (i < 0) // Condition is false, but the body ran once
+
+// Output:
+// Do-while loop iteration: 0
+```
+
+-----
+
+## 4\. Loop Control Statements 🛑
+
+Kotlin provides specific keywords to control the flow within any loop:
+
+| Keyword | Purpose |
+| :---: | :--- |
+| **`break`** | Terminates the nearest enclosing loop immediately. |
+| **`continue`** | Skips the rest of the current iteration and moves to the next iteration of the loop. |
+
+### **Example:**
+
+```kotlin
+for (number in 1..5) {
+    if (number == 3) {
+        continue // Skip to the next number (4)
+    }
+    if (number == 5) {
+        break // Stop the loop entirely
+    }
+    print("$number ") // Output: 1 2 4 
+}
+```
+
+
