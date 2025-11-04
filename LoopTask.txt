@@ -1,0 +1,47 @@
+For Loop
+
+fun main(){
+  val n=5
+  for(i in 1..n){
+    for(space in 1..(n-i)){
+      print(" ")
+    }
+    for(j in 1..i){
+      print("* ")
+    }
+  println()
+  }
+}
+
+
+//output is pyramid
+
+---------------------------------------------------------------------------------
+
+
+fun main(){
+    val n = 5
+    for(i in 1..n){
+        for(space in 1..(n-i)){
+            print(" ")
+        }
+        for(j in 1..i){
+            print("* ")
+        }
+        
+        println()
+
+    }
+    for(q in 1..n){
+        for(sp in 1..q){
+            print(" ")
+        }
+        for(w in 1..(n-q)){
+            print("* ")
+        }
+        println()
+    }
+}
+
+
+//output is Diamond
