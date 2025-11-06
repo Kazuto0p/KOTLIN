@@ -387,4 +387,19 @@ for (number in 1..5) {
 }
 ```
 
+Nov 6 --
+
+How to declare an array in kotlin
+
+use this keyword "arrayOf"
+
+an example is 
+fun main(){
+	var arr= arrayOf("one","two","three")
+    for( i in arr){
+        println("$i")
+    }
+  
+}
+("This was worked without "" and $ symbol")
 
