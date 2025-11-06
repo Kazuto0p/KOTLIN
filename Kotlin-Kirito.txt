@@ -403,3 +403,7 @@ fun main(){
 }
 ("This was worked without "" and $ symbol")
 
+
+
+Next is class class is a blueprint basically . When we use class the Name must start in capital  that is standard form.
+
