@@ -1,0 +1,639 @@
+# GetMap Android App - Complete Code Documentation
+
+## 📱 App Overview
+
+**GetMap** is a comprehensive road mapping and inventory tracking Android application built with Java. The app allows users to:
+- Track GPS locations and record routes
+- Collect road inventory data (RID - Road Inventory Data)
+- Record road cross-section measurements (RCS - Road Cross Section)
+- Capture points of interest with photos
+- Export all data to Excel format
+- View and manage tracking files
+- Share and sync data via Firebase
+
+**Package Name:** `com.natpac.myapp`  
+**Min SDK:** 29 (Android 10)  
+**Target SDK:** 35 (Android 15)  
+**Version:** 1.0.21 (Version Code: 21)
+
+---
+
+## 📂 Project Structure
+
+### Main Source Code Location
+```
+app/src/main/java/com/natpac/myapp/
+```
+
+---
+
+## 🔑 Key Java Classes and Their Functions
+
+### 1. **MainActivity.java** 
+**Location:** `app/src/main/java/com/natpac/myapp/MainActivity.java`
+
+**Purpose:** Entry point and splash screen activity
+
+**What it does:**
+- Acts as the launcher activity (first screen when app opens)
+- Performs security checks:
+  - Root detection using RootBeer library
+  - Play Integrity API verification
+  - Checks for rooted devices, emulators, Frida, and other security threats
+- Requests runtime permissions:
+  - Location (Fine, Coarse, Background)
+  - Camera
+  - Storage (varies by Android version)
+- Checks internet connectivity
+- Navigates to LoginActivity after 5-second splash screen
+- Handles permission denials with user-friendly dialogs
+
+**Key Methods:**
+- `onCreate()` - Initializes app, checks security, requests permissions
+- `isDeviceRooted()` - Checks if device is rooted
+- `checkPlayIntegrity()` - Verifies device integrity via Google Play
+- `requestNextPermission()` - Sequentially requests required permissions
+- `startSplashScreen()` - Navigates to login screen
+
+---
+
+### 2. **LoginActivity.java**
+**Location:** `app/src/main/java/com/natpac/myapp/LoginActivity.java`
+
+**Purpose:** User authentication screen
+
+**What it does:**
+- Provides login interface with email and password fields
+- Implements security features:
+  - Disables clipboard/paste on password field (prevents password hijacking)
+  - Blocks long-press on password field
+  - Prevents pasted text longer than 50 characters
+- Authenticates users via Firebase Authentication
+- Retrieves user data from Firestore database
+- Stores user session using SharedPreferences
+- Provides "Forgot Password" functionality
+- Navigates to Home activity on successful login
+- Auto-redirects to Home if user is already logged in
+
+**Key Methods:**
+- `onCreate()` - Sets up UI and security features
+- `onLoginClick()` - Handles login button click, validates credentials
+- `showForgotPasswordDialog()` - Shows dialog for password reset
+- `onRegClick()` - Navigates to registration screen
+
+**Firebase Integration:**
+- Uses `FirebaseAuth` for authentication
+- Uses `FirebaseFirestore` to fetch user details from "users" collection
+
+---
+
+### 3. **RegisterActivity.java**
+**Location:** `app/src/main/java/com/natpac/myapp/RegisterActivity.java`
+
+**Purpose:** New user registration
+
+**What it does:**
+- Collects user information:
+  - Name
+  - Email
+  - Mobile number (10 digits)
+  - Password (minimum 6 characters)
+- Validates all input fields
+- Checks if email or mobile number already exists in Firestore
+- Creates new user account in Firebase Authentication
+- Stores user details in Firestore "users" collection
+- Shows progress bar during registration
+- Prevents duplicate registrations
+- Navigates to LoginActivity after successful registration
+
+**Key Methods:**
+- `onRegClick()` - Handles registration button click
+- `resetUI()` - Resets UI elements after registration attempt
+
+**Firebase Collections Used:**
+- `users` - Stores user profile data (email, name, mobno)
+
+---
+
+### 4. **Home.java**
+**Location:** `app/src/main/java/com/natpac/myapp/Home.java`
+
+**Purpose:** Main activity with map interface and data collection
+
+**What it does:**
+- **Map Display:**
+  - Uses OSMDroid library to display OpenStreetMap
+  - Shows current GPS location
+  - Displays recorded tracks as polylines
+  - Supports map zoom, pan, and rotation
+  - Shows markers for recorded points
+
+- **GPS Tracking:**
+  - Continuously tracks user location
+  - Records GPS tracks with timestamps
+  - Minimum distance: 2 meters
+  - Update interval: 5 seconds
+  - Saves tracks as KML files
+
+- **Data Collection:**
+  - **Points:** Record points of interest with:
+    - Location (latitude/longitude)
+    - Type (Bridge, Culvert, etc.)
+    - Description
+    - Photos (multiple per point)
+    - Timestamp
+  
+  - **Road Inventory Data (RID):** Collects:
+    - Pavement type
+    - Shoulder types (Left/Right)
+    - Footpath types (Left/Right)
+    - Side drain types (Left/Right)
+    - Land use (Left/Right)
+    - Speed limits
+    - Auto/Taxi stands
+    - Bus routes and stops
+    - Surface condition
+    - Encroachments
+    - Street lights
+    - Sign boards
+    - Road markings
+    - Remarks
+  
+  - **Road Cross Section (RCS):** Measures:
+    - Road category
+    - Number of lanes
+    - Lane types
+    - Side drains (Left/Right)
+    - Footpaths (Left/Right)
+    - Shoulders (Left/Right)
+    - Carriageway widths (Left/Right)
+    - Median width
+    - Roadway width
+
+- **File Management:**
+  - Creates projects with custom names
+  - Saves KML files for tracks
+  - Exports data to Excel format
+  - Uploads files to Firebase Storage
+  - Downloads approved files from Firebase
+
+- **Firebase Integration:**
+  - Uploads KML files to Firebase Storage
+  - Stores file metadata in Firestore
+  - Syncs data across devices
+  - Downloads approved tracks for viewing
+
+**Key Features:**
+- Drawer navigation menu
+- Camera integration for photo capture
+- Excel export functionality
+- KML file generation and parsing
+- Network state monitoring
+- Location services management
+
+**Key Methods:**
+- `onCreate()` - Initializes map, location services, UI
+- `onLocationChanged()` - Handles GPS location updates
+- `startRecording()` - Begins GPS track recording
+- `stopRecording()` - Stops recording and saves track
+- `addPoint()` - Records a point of interest
+- `addRIDData()` - Records road inventory data
+- `addRCSData()` - Records road cross-section data
+- `exportToExcel()` - Exports all data to Excel file
+- `uploadToFirebase()` - Uploads files to Firebase Storage
+
+---
+
+### 5. **Global_Track.java**
+**Location:** `app/src/main/java/com/natpac/myapp/Global_Track.java`
+
+**Purpose:** View approved tracking files from all users
+
+**What it does:**
+- Displays a map showing all approved KML tracks
+- Downloads approved KML files from Firebase Storage
+- Parses KML files and displays them on map
+- Shows current user location
+- Allows viewing of shared/approved tracks
+- Fetches files from Firestore "file_paths" collection where status = "approved"
+
+**Key Methods:**
+- `onCreate()` - Sets up map and downloads approved files
+- `fetchApprovedKmlFiles()` - Retrieves list of approved files from Firestore
+- `downloadFile()` - Downloads KML file from Firebase Storage
+- `processKmlFiles()` - Parses and displays KML files on map
+
+**Firebase Collections Used:**
+- `file_paths` - Contains file metadata with approval status
+
+---
+
+### 6. **TrackingDetails.java**
+**Location:** `app/src/main/java/com/natpac/myapp/TrackingDetails.java`
+
+**Purpose:** List and select tracking files for preview
+
+**What it does:**
+- Displays list of available tracking files
+- Shows files based on user's current location (proximity-based)
+- Allows file selection via checkboxes
+- Supports swipe-to-refresh
+- Downloads selected files from Firebase
+- Navigates to Home activity with selected file for preview
+- Validates location before showing files
+
+**Key Methods:**
+- `onCreate()` - Sets up list view and fetches files
+- `fetchFileNames()` - Retrieves file list from Firestore based on location
+- `generateButton` - Opens selected file in Home activity
+
+**Firebase Collections Used:**
+- `tracks` or `file_paths` - Contains file metadata
+
+---
+
+### 7. **ExcelManager.java**
+**Location:** `app/src/main/java/com/natpac/myapp/ExcelManager.java`
+
+**Purpose:** Manages Excel file operations
+
+**What it does:**
+- Creates Excel workbooks with multiple sheets:
+  - **Points Sheet:** PID, Location, Type, Details, Timestamp, Photos
+  - **Road Inventory Sheet:** All RID fields (25 columns)
+  - **Road Cross Section Sheet:** All RCS fields (17 columns)
+- Adds data to Excel sheets
+- Deletes data from Excel sheets
+- Exports Excel files to device storage
+- Uses Apache POI library for Excel operations
+
+**Key Methods:**
+- `setupExcelProject()` - Creates or opens Excel file
+- `addPointData()` - Adds point records to Excel
+- `addRIDData()` - Adds RID records to Excel
+- `addRCSData()` - Adds RCS records to Excel
+- `deletePointData()` - Removes point from Excel
+- `deleteRIDData()` - Removes RID record from Excel
+- `deleteRCSData()` - Removes RCS record from Excel
+- `exportExcelProject()` - Saves Excel file to storage
+
+**File Location:**
+- Excel files saved to: `/Documents/kml/[ProjectName]_excel.xlsx`
+
+---
+
+### 8. **Utils.java**
+**Location:** `app/src/main/java/com/natpac/myapp/Utils.java`
+
+**Purpose:** Utility helper functions
+
+**What it does:**
+- `stripExtension()` - Removes file extension from filename
+- `getAdjustedRCSLocation()` - Adjusts GPS coordinates for RCS data
+- `getDefaultPathForAndroid()` - Returns default path for KML files
+
+**File Paths:**
+- KML files: `/Documents/kml/`
+
+---
+
+### 9. **Bean.java, Bean_RID.java, Bean_RCS.java**
+**Location:** `app/src/main/java/com/natpac/myapp/Bean*.java`
+
+**Purpose:** Data model classes (POJOs - Plain Old Java Objects)
+
+**What they do:**
+- **Bean.java:** Stores point data (PID, location, type, description, timestamp, images)
+- **Bean_RID.java:** Stores Road Inventory Data fields
+- **Bean_RCS.java:** Stores Road Cross Section Data fields
+
+These classes are used to pass data between activities and to Excel export functions.
+
+---
+
+### 10. **SaveSharedPreference.java**
+**Location:** `app/src/main/java/com/natpac/myapp/SaveSharedPreference.java`
+
+**Purpose:** Manages user login session
+
+**What it does:**
+- Stores login status in SharedPreferences
+- Checks if user is logged in
+- Used to auto-login users on app restart
+
+**Key Methods:**
+- `setLoggedIn()` - Saves login status
+- `getLoggedStatus()` - Retrieves login status
+
+---
+
+### 11. **RootCheckUtil.java**
+**Location:** `app/src/main/java/com/natpac/myapp/RootCheckUtil.java`
+
+**Purpose:** Advanced security and root detection
+
+**What it does:**
+- Detects rooted devices using multiple methods:
+  - RootBeer library
+  - Checks for SU binary files
+  - Detects dangerous system properties
+  - Detects Magisk/Zygisk files
+  - Detects suspicious processes (Frida, Xposed, etc.)
+  - Detects Frida server (port 27042)
+  - Checks for debuggers (TracerPid)
+  - Detects emulators
+- Prevents app from running on compromised devices
+
+**Key Methods:**
+- `isDeviceRooted()` - Main method that checks all security threats
+- `isFridaDetected()` - Detects Frida debugging framework
+- `isTracerPidDetected()` - Detects active debuggers
+- `isEmulator()` - Detects if running on emulator
+
+---
+
+### 12. **NetworkStateReceiver.java**
+**Location:** `app/src/main/java/com/natpac/myapp/NetworkStateReceiver.java`
+
+**Purpose:** Monitors network connectivity
+
+**What it does:**
+- Broadcasts network state changes
+- Notifies app when internet connection is lost/restored
+- Used in Home activity to handle offline scenarios
+
+---
+
+### 13. **Constants.java**
+**Location:** `app/src/main/java/com/natpac/myapp/Constants.java`
+
+**Purpose:** Stores app-wide constants
+
+**What it contains:**
+- `TAG` - Logging tag for debugging
+
+---
+
+### 14. **CustomAdapter.java, FileListAdapter.java**
+**Location:** `app/src/main/java/com/natpac/myapp/CustomAdapter.java`  
+**Location:** `app/src/main/java/com/natpac/myapp/FileListAdapter.java`
+
+**Purpose:** Custom list adapters for displaying data in ListViews
+
+**What they do:**
+- `CustomAdapter` - Displays custom data in lists
+- `FileListAdapter` - Displays file lists with checkboxes in TrackingDetails activity
+
+---
+
+### 15. **PreferencesUtility.java**
+**Location:** `app/src/main/java/com/natpac/myapp/PreferencesUtility.java`
+
+**Purpose:** Defines SharedPreferences keys
+
+**What it contains:**
+- Constants for preference keys (e.g., `LOGGED_IN_PREF`)
+
+---
+
+### 16. **Request.java, base.java, stable.java, notes.java**
+**Location:** `app/src/main/java/com/natpac/myapp/`
+
+**Purpose:** Additional utility/helper classes (specific functionality may vary)
+
+---
+
+## 🔧 Configuration Files
+
+### AndroidManifest.xml
+**Location:** `app/src/main/AndroidManifest.xml`
+
+**What it defines:**
+- App permissions (Location, Camera, Storage, Internet)
+- Activities and their configurations
+- FileProvider for sharing files
+- App metadata (icon, label, theme)
+
+**Key Permissions:**
+- `ACCESS_FINE_LOCATION` - Precise GPS location
+- `ACCESS_COARSE_LOCATION` - Approximate location
+- `ACCESS_BACKGROUND_LOCATION` - Location in background
+- `CAMERA` - Take photos
+- `WRITE_EXTERNAL_STORAGE` - Save files
+- `READ_EXTERNAL_STORAGE` - Read files
+- `INTERNET` - Network access
+
+**Activities Declared:**
+1. MainActivity (Launcher)
+2. LoginActivity
+3. RegisterActivity
+4. Home
+5. Global_Track
+6. TrackingDetails
+
+---
+
+### build.gradle.kts
+**Location:** `app/build.gradle.kts`
+
+**What it contains:**
+- App configuration (package name, version, SDK versions)
+- Dependencies (libraries used)
+- Signing configuration for release builds
+
+**Key Dependencies:**
+- **Firebase:** Authentication, Firestore, Storage, Database
+- **OSMDroid:** OpenStreetMap integration
+- **Apache POI:** Excel file operations
+- **RootBeer:** Root detection
+- **Play Integrity API:** Device integrity verification
+- **MapsForge:** Offline map support
+- **Material Design:** UI components
+
+---
+
+## 📁 Resource Files
+
+### Layout Files
+**Location:** `app/src/main/res/layout/`
+
+**Key Layouts:**
+- `activity_main.xml` - Splash screen layout
+- `activity_login.xml` - Login screen layout
+- `activity_register.xml` - Registration screen layout
+- `activity_home.xml` - Main map interface layout
+- `activity_global_track.xml` - Global track viewer layout
+- `activity_tracking_details.xml` - File list layout
+
+### Drawable Resources
+**Location:** `app/src/main/res/drawable/`
+
+- Icons, images, and drawable resources
+- Custom shapes and backgrounds
+
+### Values
+**Location:** `app/src/main/res/values/`
+
+- `strings.xml` - String resources
+- `colors.xml` - Color definitions
+- `styles.xml` - App themes and styles
+
+### Assets
+**Location:** `app/src/main/assets/`
+
+- Sample KML files
+- User details XML
+- Image assets
+
+---
+
+## 🔥 Firebase Integration
+
+### Firebase Services Used:
+
+1. **Firebase Authentication**
+   - Email/Password authentication
+   - Password reset functionality
+   - User session management
+
+2. **Cloud Firestore**
+   - **Collection: `users`**
+     - Stores: email, name, mobno
+   - **Collection: `file_paths` or `tracks`**
+     - Stores: fileName, userId, status (approved/pending), location data
+
+3. **Firebase Storage**
+   - Stores KML files
+   - Stores photos
+   - Path structure: `gs://[bucket]/[userId]/[projectName]/[fileName]`
+
+4. **Firebase Realtime Database**
+   - May be used for real-time data sync
+
+---
+
+## 🗺️ Map Integration
+
+### OSMDroid Library
+- Open-source map library for Android
+- Uses OpenStreetMap tiles
+- Supports offline maps via MapsForge
+- Features:
+  - MapView with zoom/pan
+  - Markers and overlays
+  - Polylines for tracks
+  - KML file support
+  - Custom tile sources
+
+---
+
+## 📊 Data Flow
+
+### 1. **User Registration Flow:**
+```
+RegisterActivity → Firebase Auth → Firestore (users collection) → LoginActivity
+```
+
+### 2. **Login Flow:**
+```
+LoginActivity → Firebase Auth → Firestore (fetch user data) → Home Activity
+```
+
+### 3. **Data Collection Flow:**
+```
+Home Activity → GPS Tracking → Record Points/RID/RCS → ExcelManager → Excel File
+                                    ↓
+                            Firebase Storage (KML files)
+                                    ↓
+                            Firestore (file metadata)
+```
+
+### 4. **File Sharing Flow:**
+```
+Home → Upload to Firebase → Admin Approval → Global_Track → Download & Display
+```
+
+---
+
+## 🔐 Security Features
+
+1. **Root Detection:**
+   - Multiple detection methods
+   - Blocks app on rooted devices
+
+2. **Play Integrity API:**
+   - Verifies device integrity
+   - Prevents tampering
+
+3. **Password Security:**
+   - Disabled clipboard on password field
+   - Prevents paste operations
+   - Blocks long-press actions
+
+4. **Network Security:**
+   - Requires internet for initial setup
+   - Encrypted Firebase connections
+
+---
+
+## 📱 Key Features Summary
+
+✅ **GPS Tracking** - Continuous location tracking with configurable intervals  
+✅ **Map Display** - Interactive OpenStreetMap with markers and routes  
+✅ **Data Collection** - Points, RID, and RCS data entry forms  
+✅ **Photo Capture** - Multiple photos per point  
+✅ **Excel Export** - Comprehensive Excel reports with multiple sheets  
+✅ **KML Support** - Import/export KML files for GIS software  
+✅ **Firebase Sync** - Cloud storage and synchronization  
+✅ **File Management** - Create, save, and manage projects  
+✅ **Offline Support** - Works with cached maps  
+✅ **Security** - Root detection and integrity checks  
+
+---
+
+## 🛠️ Development Notes
+
+- **Language:** Java
+- **Build System:** Gradle (Kotlin DSL)
+- **Min Android Version:** 10 (API 29)
+- **Target Android Version:** 15 (API 35)
+- **Key Libraries:**
+  - OSMDroid 6.x
+  - Apache POI (Excel)
+  - Firebase SDK
+  - RootBeer
+  - Play Integrity API
+
+---
+
+## 📝 File Locations Summary
+
+| Component | File Path |
+|-----------|-----------|
+| Main Entry Point | `app/src/main/java/com/natpac/myapp/MainActivity.java` |
+| Login Screen | `app/src/main/java/com/natpac/myapp/LoginActivity.java` |
+| Registration | `app/src/main/java/com/natpac/myapp/RegisterActivity.java` |
+| Main Map Interface | `app/src/main/java/com/natpac/myapp/Home.java` |
+| Global Track Viewer | `app/src/main/java/com/natpac/myapp/Global_Track.java` |
+| File List | `app/src/main/java/com/natpac/myapp/TrackingDetails.java` |
+| Excel Manager | `app/src/main/java/com/natpac/myapp/ExcelManager.java` |
+| Security Check | `app/src/main/java/com/natpac/myapp/RootCheckUtil.java` |
+| App Manifest | `app/src/main/AndroidManifest.xml` |
+| Build Config | `app/build.gradle.kts` |
+
+---
+
+## 🚀 Getting Started
+
+1. **Open Project:** Import into Android Studio
+2. **Configure Firebase:** Add `google-services.json` (already present)
+3. **Set Permissions:** Ensure all permissions are granted
+4. **Run App:** Build and install on Android device (API 29+)
+5. **Register:** Create a new account or login
+6. **Start Tracking:** Use Home activity to record GPS tracks and collect data
+
+---
+
+**Documentation Generated:** Complete overview of GetMap Android Application  
+**Last Updated:** Based on current codebase analysis
+
