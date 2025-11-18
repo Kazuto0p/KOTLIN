@@ -1,0 +1,34 @@
+Project Summary – Android Authentication Module (Kotlin + Firebase)
+Duration: 3 Days | Date: November 18, 2025 | Developer: Umamahesh k
+
+Project Overview
+- Project: Android Authentication Module (Email/Password + Google + Facebook Login)
+- Language: Kotlin | Tools: Android Studio, Firebase Auth, Firestore, View Binding, Material Design
+
+Day 1: XML Layouts & Learning (1 Day)
+- Studied project structure, Gradle, Material Design.
+- Built/reworked activity_register.xml: Fixed missing resources (styles, drawables, strings) by using only available Material components.
+- Added fields: Name, Email, Mobile, Password + ProgressBar.
+
+Day 2-3: Kotlin Development & Registration Flow (2 Days)
+- Converted Java to Kotlin (Register.kt): Validation, Firestore duplicate checks, Firebase Auth signup.
+- Added navigation (Login ↔ Register) with animations.
+- Fixed back navigation with OnBackPressedDispatcher.
+
+Key Issues & Solutions
+Issue                  | Cause                          | Solution
+----------------------|--------------------------------|---------
+App crash on back     | Old onBackPressed()            | Migrated to OnBackPressedDispatcher → finish()
+Build failures        | Missing resources/dependencies | Rebuilt XML; Added Firestore dep in Gradle
+Navigation broken     | Placeholder code               | Wired intents + android.R.anim transitions
+
+Final Features
+- Email/Password Login (enhanced)
+- Google & Facebook Sign-In
+- Registration: Validation, duplicates prevention, storage
+- Smooth UX: Loading, gestures, null-safe Kotlin
+
+Tech Stack: Kotlin, Firebase (Auth/Firestore), Material 3, AndroidX.
+Outcome: Production-ready module. Next: Password reset/profile.
+
+Total: 3 days. Great progress!
